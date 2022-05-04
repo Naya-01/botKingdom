@@ -1,13 +1,33 @@
 require('dotenv').config();
 const { Client, Intents } = require('discord.js');
 
-const client = new Client({ intents: [Intents.FLAGS.GUILDS] });
+const bot = new Client({
+    intents: [
+        Intents.FLAGS.GUILDS, // global event on the server
+        Intents.FLAGS.GUILD_MESSAGES, // global event message
+    ]
+});
 
-client.on("ready", ()=>{
-    console.log("Hello");
+bot.on("ready", ()=>{
+    console.log("Started");
+});
+
+bot.on("guildMemberAdd", member =>{
+    const channelId = 935852118152208387;
+    const welcomeMessage = `Bienvenue à toi guerrier <@${member.id}>!`;
+    member.guild.channels.fetch(channelId).then(channel =>{
+        channel.send(welcomeMessage);
+    })
 });
 
 
+bot.on("messageCreate",  message =>{
+    if(message.author.bot) return;
+
+    if(message.content.toLowerCase()==='!kingdom'){
+        message.channel.send('Rejoins Shin !');
+    }
+});
 
 
-client.login(process.env.TK);
+bot.login(process.env.TK);
